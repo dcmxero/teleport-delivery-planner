@@ -51,35 +51,39 @@ Quality is reported against a ceiling from Lagrangian relaxation that no plan ca
 
 ## Problems and questions along the way
 
-- **A fixed price for weight and volume is wrong on half the days.** It was the first
-  version, and it is kept as `baseline`. On `MixedExtremes`, where both limits bind, it
-  reaches 90.44% of the ceiling; deriving the price from the day reaches 99.95%.
-- **Fitting in total is not fitting in vans.** Two 10 kg vans cannot take three 6 kg
-  parcels. The shortcut for quiet days therefore still loads the vans, and falls back to
-  the full search when something is left over.
-- **How good is good, without the optimum?** Hence the ceiling. It is checked against the
-  exact optimum, found by brute force, on 120 small instances in the tests.
-- **Could the adaptive planner earn less than the baseline?** A review found that it could:
-  in one of 50 test runs, by 0.0085%, because it ranks by buckets and the baseline sorts
-  exactly. The fixed-price plan is now built as one of the finalists, which makes the
-  guarantee hold by construction, at a measured 10 to 18 ms and 13 MB per plan of 300 000.
-- **Where does test data come from?** The brief supplies none. Parcels are drawn from a
-  catalogue of about 7 000 real-shaped articles in 30 categories, not from distributions
-  that could be tuned in the planner's favour. An earlier catalogue with a flat 200
-  articles per category made one measurement misleading. `plan --input` runs the same code
-  on a real export.
-- **Is a refinement pass worth it?** One that swapped parcels across the accept/reject line
-  was built. It gained up to 0.6 points on one synthetic day and nothing elsewhere, so it
-  was removed to keep the planner simple.
-- **How many cores?** Memory, not cores, is the limit: each worker needs its own ranking
-  arrays, about 9 MB at a million parcels, so estimates run four at a time.
-- **What if the time runs out?** The budget limits the work started. On an idle machine it
-  never ran out at the default 250 ms, on two cores as on 32. On a heavily loaded one it
-  can at a million parcels, and the plan then depends on how far the search got, though
-  never below the fixed-price plan.
-- **Open questions for Alza:** what "yield" really is; whether a parcel with a poor yield
-  may wait indefinitely (a waiting bonus added to its yield would fix that without touching
-  the planner); how long the window really is; whether destinations should ever matter.
+- **Should weight and volume always cost the same?** That was the first version, kept as
+  `baseline`. It loses under 1% on six of the ten days, but up to 10.5% when the goods are
+  lopsided. On `MixedExtremes` (duvets and car batteries) it fills the payload with
+  batteries and leaves 43% of the room empty. Working the price out from the day's parcels
+  fills both limits and reaches 99.95% of the ceiling instead of 90.44%.
+- **If everything fits in total, does it fit in the vans?** Not always: two vans that take
+  10 kg each cannot carry three 6 kg parcels. So on quiet days the planner still loads van
+  by van, and if a parcel is left over it plans the day in full instead.
+- **How do we know a plan is good without knowing the best one?** The planner computes an
+  upper limit that no plan can beat and reports profit as a share of it. The tests check
+  that limit against the true best plan, found by trying every combination, on 120 small
+  cases.
+- **Can the smarter planner ever earn less than the simple one?** It could, by a hair: in
+  one of 50 test runs it earned 0.0085% less, because it sorts parcels slightly less
+  precisely to save time. Now it always builds the simple planner's plan as well and keeps
+  the better one. That costs 10 to 18 ms and 13 MB per plan of 300 000 parcels.
+- **Where does test data come from?** The brief gives none. Parcels are generated from a
+  catalogue of about 7 000 made-up but realistic articles in 30 categories, from books and
+  laptops to duvets and car batteries. An early catalogue with 200 articles in every
+  category gave one misleading result. `plan --input` runs the same code on a real export.
+- **Is it worth improving the plan afterwards?** A pass that swapped loaded parcels for
+  better ones left behind was built and measured. It helped on one test day only, by up to
+  0.6 percentage points, so it was removed to keep the code simple.
+- **Why not use every processor core?** Memory is the limit, not cores: each parallel task
+  needs about 9 MB of its own at a million parcels, so the price estimates run four at a
+  time.
+- **What if planning runs out of time?** The time limit, 250 ms by default, stops new work
+  from starting; work already started is finished. On an idle machine the limit was never
+  reached, even on two cores. On a very busy machine it can be reached at a million
+  parcels; the plan is then less good than usual, but never worse than the simple one.
+- **Questions to ask Alza.** What exactly is "yield"? May a low-yield parcel be left behind
+  day after day? Adding a bonus for every day it waits would fix that without changing the
+  planner. How long is the planning window really? Will delivery addresses ever matter?
 
 The evidence in detail: [RESULTS](docs/RESULTS.md). Methods considered and not used,
 including exact solvers and metaheuristics: [ALTERNATIVES](docs/ALTERNATIVES.md).
