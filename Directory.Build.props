@@ -1,0 +1,28 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!--
+      Every analyser the SDK ships, at its strictest setting, with warnings failing the
+      build. Rules that do not apply here are turned off in .editorconfig with the reason
+      written down, so that a warning in the output always means something.
+    -->
+    <AnalysisMode>All</AnalysisMode>
+    <AnalysisLevel>latest</AnalysisLevel>
+
+    <!--
+      Turns on the compiler's XML documentation output, which several style rules need in
+      order to run at all - the one that finds unnecessary usings among them. Without it
+      the build was quietly not checking things the settings above claim to check.
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+</Project>

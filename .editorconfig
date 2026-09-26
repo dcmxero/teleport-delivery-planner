@@ -1,0 +1,60 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml,csproj,props}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+max_line_length = 100
+
+# The analysers run at their strictest setting, and warnings are errors. Everything below
+# is a rule turned off on purpose, with the reason, rather than a warning left to sit in
+# the build output where it stops being read.
+
+# CA1002: do not expose List<T>.
+# Sound advice for anything returned, and followed there. Two methods take a List<int> as
+# a working collection they add to and remove from, which is what the parameter is for.
+# Collection<T> would wrap every access in a virtual call for no gain in safety, since the
+# caller owns the list and passes it in precisely to have it filled.
+dotnet_diagnostic.CA1002.severity = none
+
+# CA1515: types in an application assembly can be internal.
+# True in general, and the reason the command line runner keeps everything internal. The
+# benchmark project cannot: BenchmarkDotNet discovers public types and public methods by
+# reflection, so making them internal would silently leave nothing to measure.
+dotnet_diagnostic.CA1515.severity = none
+
+# CA1062: validate arguments of externally visible methods.
+# Applied where a public entry point can be reached with a null - the planners, the
+# ranking, the file readers and writers. Left off for the domain types, whose methods take
+# structs and are called from inside the same assembly on paths that have already checked.
+dotnet_diagnostic.CA1062.severity = suggestion
+
+# An unnecessary using is a warning like any other, now that the documentation output it
+# depends on is switched on.
+dotnet_diagnostic.IDE0005.severity = warning
+
+[{tests,benchmarks}/**/*.cs]
+# CS1591: missing XML comment on a publicly visible member.
+# The documentation output is on so that other rules can run. Requiring a doc comment on
+# every test and benchmark method would be ceremony rather than documentation - their
+# names say what they check, and nothing consumes them as an API.
+dotnet_diagnostic.CS1591.severity = none
+
+[tests/**/*.cs]
+# Test method names read as sentences, which is the point of them.
+dotnet_diagnostic.CA1707.severity = none
+
+# Test data built inline is not a public API surface.
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1825.severity = none
