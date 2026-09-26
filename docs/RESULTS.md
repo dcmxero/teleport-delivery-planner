@@ -27,9 +27,9 @@ plan is always built as one of its finalists, and the best plan wins. The
 fleet is a fixed cost - 120 vans and 120 drivers leave the warehouse either way - so the
 marginal cost of the better plan is those milliseconds.
 
-**What happens when the clock runs short.** The adaptive planner is time-boxed, so an
-exhausted budget is answered by doing less rather than by running over. Measured on seed 1,
-five runs at each budget:
+**What happens when the clock runs short.** The adaptive planner is time-boxed: the budget
+limits how much search is started, and it does not impose a hard deadline on the whole run,
+because a plan already begun is finished. Measured on seed 1, five runs at each budget:
 
 | budget for the price search | `MixedExtremes` | `DenseGoods` | `PeakSeason` |
 |---|---:|---:|---:|
@@ -54,10 +54,8 @@ The fall back to fixed prices appeared only at budgets of about five millisecond
 below. A variant that estimates every candidate regardless of the clock was compared
 against the planner on the same parcels: it was never worse, better only at those tiny
 budgets, and cost 40 to 155 ms more there. At the default settings the two gave
-identical plans, so it was not adopted. The budget also governs what is started rather
-than how long it runs, and the measurement shows how far apart those are: on two cores
-the Christmas peak takes about 1.4 seconds under a 250 ms budget, because a plan once
-begun is always finished.
+identical plans, so it was not adopted. How far the whole run can exceed the budget shows
+on two cores: the Christmas peak takes about 1.4 seconds under a 250 ms budget.
 
 That is also what the `baseline` row in the [results table](../README.md#results) is for. It is not a rival on
 offer; it is the instrument that lets the same question be answered on real data through

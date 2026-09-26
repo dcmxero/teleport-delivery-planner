@@ -22,15 +22,15 @@ profit, and says the solution need not be optimal, only fast and profitable enou
 ## How I understood it
 
 - **It is a known hard problem.** Choosing which parcels go into a limited number of vans,
-  each with a weight and a volume limit, is the multiple knapsack problem. No method finds
-  the best answer quickly for hundreds of thousands of parcels, so the aim is a fast method
-  whose result can be checked against the best that is possible.
+  each with a weight and a volume limit, is the multiple knapsack problem. Finding the exact
+  best answer can take far too long at this scale, so I chose a fast heuristic whose result
+  can be checked against the best that is possible.
 - **Either limit can run out first.** Duvets fill a van long before it is heavy; car
   batteries reach 5.5 t while the van is still half empty. Which limit matters depends on
   what was ordered that day.
-- **The day of the week is not what matters.** Tuesdays and Thursdays simply have fewer
-  parcels. The planner looks at the parcels themselves: if everything fits, it takes
-  everything.
+- **The day of the week is not what matters.** The brief describes Tuesdays and Thursdays
+  as less constrained by capacity. The planner therefore looks at the parcels actually
+  waiting, not at the weekday: if everything fits, it takes everything.
 - **Any van will do.** Parcels have no destination in the brief, so it does not matter
   which van a parcel travels in, only that it fits. That lets the 120 vans be treated as
   one big van when estimating.
@@ -46,8 +46,8 @@ profit, and says the solution need not be optimal, only fast and profitable enou
    fully plans the best few at the same time and keeps the most profitable plan. The fixed
    ratio is always one of them, so the result is never worse than with fixed prices.
 3. **Fill the vans evenly.** Each parcel goes into the van that will be least full
-   afterwards, counting whichever of weight or volume is fuller. No van ends up full on
-   weight while half empty on volume.
+   afterwards, counting whichever of weight or volume is fuller. This spreads the load
+   across the vans while respecting both limits.
 4. **Order parcels without a full sort.** Scores are grouped by their binary form, which
    orders 300 000 parcels in about a millisecond instead of 14 ms for a normal sort.
 
@@ -58,10 +58,11 @@ computed by Lagrangian relaxation. Reaching 99% of the ceiling means the plan is
 ## Problems and questions along the way
 
 - **Should weight and volume always cost the same?** That was the first version, kept as
-  `baseline`. It loses under 1% on six of the ten days, but up to 10.5% when the goods are
-  lopsided. On `MixedExtremes` (duvets and car batteries) it fills the payload with
-  batteries and leaves 43% of the room empty. Working the price out from the day's parcels
-  fills both limits and reaches 99.95% of the ceiling instead of 90.44%.
+  `baseline`. Working the price out from the day's parcels improves profit over it by
+  under 1% on six of the ten days, but by up to 10.5% when the goods are lopsided. On
+  `MixedExtremes` (duvets and car batteries) the fixed price fills the payload with
+  batteries and leaves 43% of the room empty; the derived price fills both limits and
+  reaches 99.95% of the ceiling instead of 90.44%.
 - **If everything fits in total, does it fit in the vans?** Not always: two vans that take
   10 kg each cannot carry three 6 kg parcels. So on quiet days the planner still loads van
   by van, and if a parcel is left over it plans the day in full instead.

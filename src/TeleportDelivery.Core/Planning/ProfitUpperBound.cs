@@ -6,14 +6,14 @@ namespace TeleportDelivery.Core.Planning;
 /// A ceiling on the profit any plan could possibly carry.
 /// </summary>
 /// <remarks>
-/// Lagrangian relaxation of one pooled van: valid for any prices, so the tightest of a
-/// spread is reported. A plan at 98% of it is at least 98% of the optimum; a plan well
-/// below it has not necessarily lost anything, because the ceiling can be loose.
+/// Lagrangian relaxation of one pooled van: valid for any non-negative prices, so the
+/// tightest of a spread is reported. A plan at 98% of it is at least 98% of the optimum;
+/// a plan well below it has not necessarily lost anything, because the ceiling can be loose.
 /// </remarks>
 public static class ProfitUpperBound
 {
     /// <summary>
-    /// How many price splits to try; more can only tighten the result.
+    /// Number of price splits to evaluate.
     /// </summary>
     private const int DefaultPriceCandidates = 13;
 
