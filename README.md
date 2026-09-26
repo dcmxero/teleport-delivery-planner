@@ -21,33 +21,39 @@ profit, and says the solution need not be optimal, only fast and profitable enou
 
 ## How I understood it
 
-- **It is a two-dimensional multiple knapsack.** 120 identical bins, two capacities,
-  indivisible items. That is NP-hard, and hundreds of thousands of items in a short window
-  rule out exact solvers. The aim is a near-linear heuristic whose quality is *measured*.
-- **Either limit can be the one that runs out.** Duvets fill a van long before its payload;
-  car batteries reach 5.5 t with room to spare. Which one binds depends on the day's goods.
-- **The weekday is not an input.** Tuesdays and Thursdays only mean less demand, so the
-  planner reads the demand: when everything fits, there is nothing to choose.
-- **Vans are interchangeable.** The brief gives parcels no destination, so there is no
-  routing, and the fleet can be treated as one pooled capacity for estimates and bounds.
-- **Yield is the margin the retailer keeps**, not the price: a games console sells for
-  twelve thousand crowns and earns a few hundred.
+- **It is a known hard problem.** Choosing which parcels go into a limited number of vans,
+  each with a weight and a volume limit, is the multiple knapsack problem. No method finds
+  the best answer quickly for hundreds of thousands of parcels, so the aim is a fast method
+  whose result can be checked against the best that is possible.
+- **Either limit can run out first.** Duvets fill a van long before it is heavy; car
+  batteries reach 5.5 t while the van is still half empty. Which limit matters depends on
+  what was ordered that day.
+- **The day of the week is not what matters.** Tuesdays and Thursdays simply have fewer
+  parcels. The planner looks at the parcels themselves: if everything fits, it takes
+  everything.
+- **Any van will do.** Parcels have no destination in the brief, so it does not matter
+  which van a parcel travels in, only that it fits. That lets the 120 vans be treated as
+  one big van when estimating.
+- **Yield means profit, not price.** A games console sells for twelve thousand crowns but
+  earns a few hundred; a phone case earns about a third of its price.
 
 ## Solution
 
-1. **Skip the choice when there is none.** If the whole pool fits into the vans, it is
-   loaded without choosing.
-2. **Price weight against volume.** Parcels are ranked by yield per unit of priced
-   capacity. Thirteen price splits are estimated on the day's parcels, the best few get a
-   full plan in parallel, and the most profitable plan wins. The fixed-price plan is always
-   among them, so the result is never worse than fixed prices.
-3. **Load the fleet evenly.** Each parcel goes to the van left least full on its tighter
-   limit, so neither capacity is stranded.
-4. **Rank without sorting.** A counting sort on the bits of each score orders 300 000
-   parcels in about a millisecond, against 14 ms for `Array.Sort`.
+1. **If everything fits, take everything.** No choice is needed; the parcels are loaded.
+2. **Work out what weight and volume are worth today.** Each parcel is scored by its profit
+   per unit of the weight and space it uses. How much weight counts against volume is not
+   fixed: the planner tries thirteen ratios on the day's parcels, estimates each quickly,
+   fully plans the best few at the same time and keeps the most profitable plan. The fixed
+   ratio is always one of them, so the result is never worse than with fixed prices.
+3. **Fill the vans evenly.** Each parcel goes into the van that will be least full
+   afterwards, counting whichever of weight or volume is fuller. No van ends up full on
+   weight while half empty on volume.
+4. **Order parcels without a full sort.** Scores are grouped by their binary form, which
+   orders 300 000 parcels in about a millisecond instead of 14 ms for a normal sort.
 
-Quality is reported against a ceiling from Lagrangian relaxation that no plan can exceed:
-99% of it means at least 99% of the best possible plan.
+Every result is compared with a ceiling: an upper limit on profit that no plan can exceed,
+computed by Lagrangian relaxation. Reaching 99% of the ceiling means the plan is at least
+99% as good as the best possible one.
 
 ## Problems and questions along the way
 
