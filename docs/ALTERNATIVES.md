@@ -49,8 +49,8 @@ Genetic algorithms, simulated annealing, tabu search. Each candidate evaluation 
 in the parcels, so within a window that fits a hundred passes over the data there is room
 for perhaps a hundred generations on a population of one. A well-priced greedy reaches
 99% or better of a provable ceiling on every demand mix here over twenty seeds, in a few
-hundred milliseconds. There is nothing for a metaheuristic to
-find, and its runtime would be far less predictable.
+hundred milliseconds. The room left for improvement does not justify the extra
+complexity, and a metaheuristic's runtime would be far less predictable.
 
 The one place this style of search does have something to offer is a narrow local pass
 around the accept/reject boundary — see the next section.

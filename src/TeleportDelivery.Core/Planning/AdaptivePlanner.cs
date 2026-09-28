@@ -174,7 +174,8 @@ public sealed class AdaptivePlanner(
     /// Estimates what a set of prices would earn, filling the fleet as one pooled van.
     /// </summary>
     /// <remarks>
-    /// Overstates every candidate, but it only serves to compare them.
+    /// Only a comparison between candidates, not a bound: loading van by van can come out
+    /// higher or lower.
     /// </remarks>
     private static long EstimateProfit(
         Parcel[] candidates,

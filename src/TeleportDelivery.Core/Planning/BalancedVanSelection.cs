@@ -6,8 +6,8 @@ namespace TeleportDelivery.Core.Planning;
 /// Puts each parcel into the van that stays most evenly loaded afterwards.
 /// </summary>
 /// <remarks>
-/// Scored on the tighter of the two limits, so no van fills on one while the other stays
-/// empty. Scans all vans; a heap cannot order vans by two limits at once.
+/// Scored on the tighter of the two limits, which spreads the load across the vans while
+/// respecting both. Scans all vans; a heap cannot order vans by two limits at once.
 /// </remarks>
 public sealed class BalancedVanSelection : IVanSelection
 {

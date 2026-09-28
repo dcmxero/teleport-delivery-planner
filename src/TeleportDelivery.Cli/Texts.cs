@@ -170,7 +170,7 @@ internal static class Texts
             ["ScalingBenchmarks.Plan"] = Plan.Adaptive,
             ["PlanStageBenchmarks.Ranking"] = "poradie bez triedenia",
             ["PlanStageBenchmarks.SortForComparison"] = "triedenie, na porovnanie",
-            ["PlanStageBenchmarks.BalancedPacking"] = "nakladanie do dodávok",
+            ["PlanStageBenchmarks.BalancedPacking"] = "zoradenie a nakladanie do dodávok",
         };
 
         /// <summary>

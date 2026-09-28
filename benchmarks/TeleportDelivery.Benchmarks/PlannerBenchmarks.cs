@@ -126,7 +126,7 @@ public class PlanStageBenchmarks
     }
 
     /// <summary>
-    /// Loading the fleet, choosing the van that stays most evenly loaded.
+    /// Ordering the pool and loading the fleet, choosing the van that stays most evenly loaded.
     /// </summary>
     [Benchmark]
     public int BalancedPacking() => Pack(balanced);

@@ -69,7 +69,8 @@ public static class ProfitUpperBound
     /// </summary>
     /// <remarks>
     /// The whole fleet costs exactly one at these prices. The multiplier is the score of the
-    /// parcel at which the fleet fills; any other value would still give a valid ceiling.
+    /// parcel at which the fleet fills; any other non-negative value would still give a valid
+    /// ceiling.
     /// </remarks>
     private static double BoundAt(
         Parcel[] parcels,

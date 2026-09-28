@@ -97,7 +97,8 @@ internal static class Context
         IReadOnlyList<string[]> planners) =>
         table.AddRow(
         [
-            label,
+            // A file name is arbitrary text; a bracket in it would be read as markup.
+            label.EscapeMarkup(),
             waiting,
             .. Enumerable.Range(0, planners[0].Length)
                 .Select(column => string.Join('\n', planners.Select(cells => cells[column]))),
@@ -119,7 +120,9 @@ internal static class Context
                 Count(plan.RejectedParcelIds.Count)),
             (plan.TotalProfitHellers / 100_000_000.0).ToString("F2", Texts.Culture)
                 .PadLeft(6),
-            Tables.Percent(plan.TotalProfitHellers / bound, decimals: 2).PadLeft(7),
+            // A ceiling of zero means nothing could be carried at all.
+            (bound > 0 ? Tables.Percent(plan.TotalProfitHellers / bound, decimals: 2) : "-")
+                .PadLeft(7),
             FleetUsed.Of(
                 Tables.Percent(plan.WeightUtilisation),
                 Tables.Percent(plan.VolumeUtilisation)),
