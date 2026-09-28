@@ -13,12 +13,12 @@ public sealed class DeliveryPlan(
     FleetConfiguration fleet,
     IReadOnlyList<VanLoad> vans,
     IReadOnlyList<int> rejectedParcelIds,
-    Planning.PlanningTrace? trace = null)
+    PlanningTrace? trace = null)
 {
     /// <summary>
     /// How this plan was reached, or null when the planner had nothing to record.
     /// </summary>
-    public Planning.PlanningTrace? Trace { get; } = trace;
+    public PlanningTrace? Trace { get; } = trace;
 
     /// <summary>
     /// The fleet this plan was built for.

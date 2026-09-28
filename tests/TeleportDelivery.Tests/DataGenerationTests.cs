@@ -13,10 +13,23 @@ public class DataGenerationTests
     [Fact]
     public void TheCatalogueMatchesTheCopyInTheRepository()
     {
-        // data/catalogue.csv is what a reader sees; it must be what the code generates.
+        // data/catalogue.csv is what a reader sees; it must be what the code generates,
+        // and ProductCatalogue.Write is how it is regenerated when the catalogue changes.
         string stored = RepositoryFile(Path.Combine("data", "catalogue.csv"));
+        string written = Path.Combine(Path.GetTempPath(), $"catalogue-{Guid.NewGuid():N}.csv");
 
-        Assert.Equal(ProductCatalogue.All.ToArray(), ProductCatalogue.Read(stored));
+        try
+        {
+            ProductCatalogue.Write(written);
+
+            Assert.Equal(
+                File.ReadAllText(stored).ReplaceLineEndings("\n"), File.ReadAllText(written));
+            Assert.Equal(ProductCatalogue.All.ToArray(), ProductCatalogue.Read(stored));
+        }
+        finally
+        {
+            File.Delete(written);
+        }
     }
 
     [Fact]

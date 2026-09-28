@@ -1,4 +1,4 @@
-namespace TeleportDelivery.Core.Planning;
+namespace TeleportDelivery.Core.Domain;
 
 /// <summary>
 /// How a plan was arrived at.
